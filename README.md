@@ -10,24 +10,24 @@ Docker Compose
 Установка и запуск
 Клонируйте репозиторий на ваш локальный компьютер:
 bash
-Copy code
-git clone https://github.com/yourusername/gym_project.git
+
+git clone 
 cd gym_project
 Создайте и запустите контейнеры Docker:
 bash
-Copy code
+
 docker-compose up --build
 Выполните миграции для базы данных:
 bash
-Copy code
+
 docker-compose run first_service python manage.py migrate
 Создайте суперпользователя для доступа к административной панели Django:
 bash
-Copy code
+
 docker-compose run first_service python manage.py createsuperuser
 Перезапустите контейнеры для применения изменений:
 bash
-Copy code
+
 docker-compose down
 docker-compose up
 Теперь вы можете получить доступ к административной панели Django по адресу http://localhost:8000/admin и настроить ваши среды Gym.
@@ -51,6 +51,8 @@ POST /api/start_cartpole/ - Запустить среду CartPole
 POST /api/start_mountaincar/ - Запустить среду MountainCar
 POST /api/start_mountaincar_continuous/ - Запустить среду MountainCarContinuous
 POST /api/start_pendulum/ - Запустить среду Pendulum
+
 Использование
+
 Сначала создайте пользователя и среду через API первого сервиса или через административную панель Django.
 Отправьте запрос на запуск среды через API второго сервиса.
