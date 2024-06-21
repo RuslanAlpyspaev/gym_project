@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: gym_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 2698
+    ports:
+      - "5432:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  first_service:
+    build:
+      context: ./first_service
+    volumes:
+      - ./first_service:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - rabbitmq
+
+  second_service:
+    build:
+      context: ./second_service
+    command: gunicorn --workers 3 --bind 0.0.0.0:8001 second_service.wsgi:application
+    volumes:
+      - ./second_service:/app
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
+      - rabbitmq
+
+  celery_worker:
+    build:
+      context: ./second_service
+    command: celery -A second_service worker --loglevel=info
+    volumes:
+      - ./second_service:/app
+    depends_on:
+      - second_service
+      - rabbitmq
