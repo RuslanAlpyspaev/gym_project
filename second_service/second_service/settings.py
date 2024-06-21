@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-&5_o0rx*j(vzkyt3*2=u63)_hozx8wtht0am)f@13t#ltmxb)-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -73,7 +73,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gym_db',
-        'USER': 'user',
+        'USER': 'postgres',
         'PASSWORD': '2698',
         'HOST': 'db',
         'PORT': '5432',

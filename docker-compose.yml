@@ -5,10 +5,10 @@ services:
     image: postgres:13
     environment:
       POSTGRES_DB: gym_db
-      POSTGRES_USER: user
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 2698
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   rabbitmq:
     image: rabbitmq:3-management
