@@ -10,7 +10,7 @@ services:
   db:
     image: postgres:15
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: gym_project
       POSTGRES_USER: user
@@ -24,6 +24,8 @@ services:
       - ./first_service:/app
     depends_on:
       - db
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/gym_project
 
   second_service:
     build:
@@ -34,6 +36,8 @@ services:
     depends_on:
       - db
       - rabbitmq
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/gym_project
 
   celery_worker:
     build:
