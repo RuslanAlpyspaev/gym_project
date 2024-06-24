@@ -75,7 +75,7 @@ DATABASES = {
         'NAME': 'gym_db',
         'USER': 'postgres',
         'PASSWORD': '2698',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

@@ -77,10 +77,11 @@ DATABASES = {
         'NAME': 'gym_db',
         'USER': 'postgres',
         'PASSWORD': '2698',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -104,6 +105,16 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
 
 CELERY_BROKER_URL = 'amqp://rabbitmq'
 CELERY_RESULT_BACKEND = 'rpc://'

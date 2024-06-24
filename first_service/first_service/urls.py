@@ -11,6 +11,6 @@ router.register(r'environments', EnvironmentViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/users/', include('users.urls')),
-    path('api/environments/', include('environments.urls')),
+    path('api/', include('users.urls')),
+    path('api/', include('environments.urls')),
 ]
