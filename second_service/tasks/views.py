@@ -2,7 +2,6 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .tasks import run_acrobot, run_cartpole, run_mountaincar, run_mountaincar_continuous, run_pendulum
-from .serializers import TaskSerializer
 
 
 class TaskViewSet(viewsets.ViewSet):
