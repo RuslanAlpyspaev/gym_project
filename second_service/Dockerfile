@@ -1,13 +1,33 @@
 FROM python:3.9-slim
 
+# Установка необходимых системных пакетов
+# Обновление списка пакетов и установка необходимых библиотек
+# Инструменты для сборки (например, компилятор GCC)
+# Библиотека OpenGL, необходимая для рендеринга графики в некоторых средах Gym
+# Очистка кеша пакетов для уменьшения размера образа
+# Удаление списка пакетов для освобождения пространства
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libpq-dev \
+    libgl1-mesa-glx \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Установка рабочей директории внутри контейнера
 WORKDIR /app
 
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Копирование файла зависимостей Python в рабочую директорию
+COPY requirements.txt .
 
-COPY . /app/
+# Установка pip и зависимостей Python
+RUN pip install --upgrade pip                 # Обновление pip до последней версии
+RUN pip install -r requirements.txt           # Установка зависимостей, указанных в requirements.txt
+
+# Копирование всех файлов приложения в рабочую директорию
+COPY ./app .
+
+# Открытие порта 8001 для доступа к приложению
+EXPOSE 8001
+
+# Команда для запуска приложения с использованием Uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+# Запуск Uvicorn для приложения FastAPI (main:app - путь к приложению)

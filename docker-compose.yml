@@ -1,50 +1,44 @@
 version: '3.8'
 
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
-  db:
-    image: postgres:15
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_DB: gym_project
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-
   first_service:
     build:
-      context: ./first_service
-    command: python main.py
-    volumes:
-      - ./first_service:/app
-    depends_on:
-      - db
+      context: ./first_service  # Указываем путь к директории с Dockerfile для сборки первого сервиса
+    ports:
+      - "8000:8000"  # Пробрасываем порт 8000 контейнера на порт 8000 хоста
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/gym_project
+      DATABASE_URL: "postgresql://user:password@db:5432/gym_project"  # Устанавливаем переменную окружения для подключения к базе данных
+    depends_on:
+      - db  # Указываем, что first_service зависит от сервиса db
 
   second_service:
     build:
-      context: ./second_service
-    command: gunicorn -b 0.0.0.0:8001 second_service:app
-    volumes:
-      - ./second_service:/app
+      context: ./second_service  # Указываем путь к директории с Dockerfile для сборки второго сервиса
+    ports:
+      - "8001:8001"  # Пробрасываем порт 8001 контейнера на порт 8001 хоста
     depends_on:
-      - db
-      - rabbitmq
+      - db  # Указываем, что second_service зависит от сервиса db
+      - rabbitmq  # Указываем, что second_service зависит от сервиса rabbitmq
+
+  db:
+    image: postgres:15  # Используемая версия образа Postgres для базы данных
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/gym_project
+      POSTGRES_USER: user  # Устанавливаем имя пользователя для базы данных
+      POSTGRES_PASSWORD: password  # Устанавливаем пароль пользователя для базы данных
+      POSTGRES_DB: gym_project  # Устанавливаем имя базы данных
+    ports:
+      - "5432:5432"  # Пробрасываем порт 5432 контейнера на порт 5432 хоста
+
+  rabbitmq:
+    image: rabbitmq:3-management  # Используемая версия образа RabbitMQ с веб-интерфейсом управления
+    ports:
+      - "5672:5672"  # Пробрасываем порт 5672 контейнера на порт 5672 хоста (AMQP)
+      - "15672:15672"  # Пробрасываем порт 15672 контейнера на порт 15672 хоста (интерфейс управления)
 
   celery_worker:
     build:
-      context: ./second_service
-    command: celery -A celery worker --loglevel=info
-    volumes:
-      - ./second_service:/app
+      context: ./second_service  # Указываем путь к директории с Dockerfile для сборки celery_worker
+    command: celery -A celery worker --loglevel=info  # Запускаем Celery воркер с уровнем логирования info
     depends_on:
-      - second_service
-      - rabbitmq
+      - second_service  # Указываем, что celery_worker зависит от второго сервиса
+      - rabbitmq  # Указываем, что celery_worker зависит от RabbitMQ
